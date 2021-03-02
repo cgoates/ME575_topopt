@@ -7,7 +7,7 @@ allNodes = 0:n_nodes;
 loads = zeros( dim, n_nodes );
 has_loads = ( zeros( dim, n_nodes ) == 1 );
 
-xLEdgeNodes = mod( allNodes, nx + 1 ) == nx;
+xLEdgeNodes = mod( allNodes, nx + 1 ) == nx & ( allNodes <= nx + 1 );
 
 has_loads(2,xLEdgeNodes) = true;
 loads(2,xLEdgeNodes) = -1;
