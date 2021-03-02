@@ -1,4 +1,4 @@
-function xstar = FEM_Main
+function xstar = TopOpt_Main
 
 % Parameters to set:
 num_elems_x = 20;
