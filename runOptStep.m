@@ -5,6 +5,10 @@ E = 1e-3 + x.^3*(1 - 1e-3);
 % Assemble K
 n_qpts = 2^fem.dim;
 K = sparse( fem.n_eq, fem.n_eq );
+Imat = zeros( 1, fem.n_eq^2 );
+Jmat = zeros( 1, fem.n_eq^2 );
+Xmat = zeros( 1, fem.n_eq^2 );
+ntriplets = 0;
 for e = 1:fem.n_el
     D = getD( 10*E(e), fem.nu );
     for i = 1:n_qpts
@@ -27,15 +31,18 @@ for e = 1:fem.n_el
                         if fem.ID(k,fem.IEN(e,b)) == -1
                             continue;
                         end
-                        
-                        K( fem.ID(j,fem.IEN(e,a)), fem.ID(k,fem.IEN(e,b)) ) =...
-                            K( fem.ID(j,fem.IEN(e,a)), fem.ID(k,fem.IEN(e,b)) ) + ke_ab(j,k);
+                        ntriplets = ntriplets + 1;
+                        Imat(ntriplets) = fem.ID(j,fem.IEN(e,a));
+                        Jmat(ntriplets) = fem.ID(k,fem.IEN(e,b));
+                        Xmat(ntriplets) = ke_ab(j,k);
                     end
                 end
             end
         end
     end
 end
+
+K = sparse( Imat(1:ntriplets), Jmat(1:ntriplets), Xmat(1:ntriplets), fem.n_eq, fem.n_eq );
 
 du = K\fem.F;
 compliance = transpose( du )*fem.F;
