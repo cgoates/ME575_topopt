@@ -20,6 +20,15 @@ fem.ID = getID( has_constr );
 
 fem.n_eq = max( max( fem.ID ) );
 
+% Assuming linear parameterization
+xe = fem.Nodes( :, fem.IEN( 1, : ) );
+i = 1;
+N_ind = (i-1)*(fem.dim+1)+1:i*(fem.dim+1);
+[~,Jac] = getGeom( fem.N(:,N_ind), xe );
+fem.J = det( Jac );
+fem.JacInv = Jac^(-1);
+
+
 % Assemble F
 fem.F = zeros( fem.n_eq, 1 );
 for i = 1:fem.dim
