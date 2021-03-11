@@ -7,6 +7,7 @@ fem.dim = 2;
 
 
 fem.Nodes = getNodePositions( Lx, Ly, nx, ny );
+%inspectNodes( fem.Nodes );
 fem.IEN = getIEN( fem.n_el, nx );
 
 fem.quad = getQuadPoints;
