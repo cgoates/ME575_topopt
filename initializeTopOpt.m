@@ -29,6 +29,7 @@ N_ind = (i-1)*(fem.dim+1)+1:i*(fem.dim+1);
 fem.J = det( Jac );
 fem.JacInv = Jac^(-1);
 
+fem = getElementStiffness( fem );
 
 % Assemble F
 fem.F = zeros( fem.n_eq, 1 );

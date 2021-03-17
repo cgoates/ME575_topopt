@@ -1,8 +1,8 @@
 function xstar = TopOpt_Main
 
 % Parameters to set:
-num_elems_x = 20;
-num_elems_y = 4;
+num_elems_x = 80;
+num_elems_y = 16;
 Lx = 1;
 Ly = 0.1;
 volfrac = 0.5; % Fraction of the volume to fill
@@ -13,8 +13,12 @@ fem = initializeTopOpt( num_elems_x, num_elems_y, Lx, Ly );
 % starting place that satisfies the constraints.
 x0 = volfrac*ones(1,fem.n_el);
 
-function o = objective( x )
-    o = runOptStep( x, fem )/3e5;
+scaling = runOptStep(x0,fem);
+
+function [o,do] = objective( x )
+    [o,do] = runOptStep( x, fem );
+    o = o/scaling;
+    do = do/scaling;
 end
 
 objective( x0 )
@@ -26,7 +30,7 @@ options = optimoptions('fmincon', ...
         'OptimalityTolerance', 1e-6, ...  % convergence tolerance on first order optimality
         'ConstraintTolerance', 1e-6, ...  % convergence tolerance on constraints
         'StepTolerance', 1e-12, ...
-        'SpecifyObjectiveGradient', false, ...  % supply gradients of objective
+        'SpecifyObjectiveGradient', true, ...  % supply gradients of objective
         'SpecifyConstraintGradient', false, ...  % supply gradients of constraints
         'CheckGradients', false, ...  % true if you want to check your supplied gradients against finite differencing
         'OutputFcn', @outfun );  % display diagnotic information
